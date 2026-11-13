@@ -1,0 +1,55 @@
+:host {
+  display: block;
+  min-height: 100vh;
+}
+
+.site-header {
+  align-items: center;
+  background: #fff;
+  border-bottom: 1px solid #e8edf2;
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem max(1.5rem, calc((100% - 1120px) / 2));
+}
+
+.brand {
+  align-items: center;
+  color: #172b4d;
+  display: inline-flex;
+  font-size: 1.05rem;
+  font-weight: 750;
+  gap: 0.65rem;
+  text-decoration: none;
+}
+
+.brand-mark {
+  align-items: center;
+  background: #315be8;
+  border-radius: 0.65rem;
+  color: white;
+  display: inline-flex;
+  height: 2rem;
+  justify-content: center;
+  width: 2rem;
+}
+
+.api-label {
+  color: #65748b;
+  font-size: 0.85rem;
+}
+
+.app-main {
+  margin: 0 auto;
+  max-width: 1120px;
+  padding: 3rem 1.5rem 5rem;
+}
+
+@media (max-width: 600px) {
+  .site-header {
+    padding: 0.85rem 1rem;
+  }
+
+  .app-main {
+    padding: 2rem 1rem 3rem;
+  }
+}

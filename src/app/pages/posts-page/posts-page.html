@@ -1,0 +1,88 @@
+<section class="page-heading">
+  <div>
+    <p class="eyebrow">Bacheca</p>
+    <h1>Tutti i post</h1>
+    <p class="subtitle">Consulta i contenuti o pubblica un nuovo post.</p>
+  </div>
+  <div class="count-card" aria-live="polite">
+    <span class="count-number">{{ postCount() }}</span>
+    <span class="count-label">post caricati</span>
+  </div>
+</section>
+
+@if (error(); as message) {
+  <div class="alert" role="alert">{{ message }}</div>
+}
+
+<section class="content-grid">
+  <div class="list-column">
+    <label class="search-field">
+      <span class="sr-only">Filtra i post</span>
+      <span class="search-icon" aria-hidden="true">⌕</span>
+      <input
+        type="search"
+        placeholder="Cerca nel titolo o nel testo..."
+        [value]="filter()"
+        (input)="setFilter($event)"
+      />
+    </label>
+
+    @if (loading()) {
+      <div class="status-card" role="status">
+        <span class="spinner" aria-hidden="true"></span>
+        <span>Caricamento dei post...</span>
+      </div>
+    } @else if (posts().length === 0 && !error()) {
+      <div class="status-card">Nessun post disponibile.</div>
+    } @else if (visiblePosts().length === 0 && !error()) {
+      <div class="status-card">Nessun post corrisponde alla ricerca.</div>
+    } @else {
+      <div class="post-list">
+        @for (post of visiblePosts(); track post.id) {
+          <article class="post-card">
+            <div class="post-meta">
+              <span>POST #{{ post.id }}</span>
+              @if (post.createdLocally) {
+                <span class="local-badge">Simulazione</span>
+              } @else {
+                <a [routerLink]="['/posts', post.id]" [attr.aria-label]="'Apri: ' + post.title">
+                  Apri dettaglio <span aria-hidden="true">↗</span>
+                </a>
+              }
+            </div>
+            <h2>{{ post.title }}</h2>
+            <p>{{ post.body }}</p>
+          </article>
+        }
+      </div>
+    }
+  </div>
+
+  <aside class="create-card">
+    <p class="eyebrow">Nuovo contenuto</p>
+    <h2>Scrivi un post</h2>
+    <p class="form-intro">La demo accetta il post e lo aggiunge all'elenco corrente.</p>
+    <form (ngSubmit)="createPost()">
+      <label for="post-title">Titolo</label>
+      <input
+        id="post-title"
+        name="title"
+        type="text"
+        [(ngModel)]="draftTitle"
+        maxlength="120"
+        required
+      />
+
+      <label for="post-body">Testo</label>
+      <textarea id="post-body" name="body" [(ngModel)]="draftBody" rows="5" required></textarea>
+
+      <button class="primary-button" type="submit" [disabled]="posting()">
+        @if (posting()) {
+          Invio in corso...
+        } @else {
+          Pubblica post
+        }
+      </button>
+    </form>
+  </aside>
+</section>

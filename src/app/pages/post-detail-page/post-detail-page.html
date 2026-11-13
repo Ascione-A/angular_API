@@ -1,0 +1,34 @@
+<a class="back-link" routerLink="/posts"> <span aria-hidden="true">←</span> Torna ai post </a>
+
+@if (loading()) {
+  <div class="status-card" role="status">
+    <span class="spinner" aria-hidden="true"></span>
+    <span>Caricamento del post...</span>
+  </div>
+} @else if (error(); as message) {
+  <section class="error-card" role="alert">
+    <span class="error-icon" aria-hidden="true">!</span>
+    <div>
+      <h1>Impossibile aprire il post</h1>
+      <p>{{ message }}</p>
+    </div>
+    <a class="return-link" routerLink="/posts">Rivedi tutti i post</a>
+  </section>
+} @else if (post(); as currentPost) {
+  <article class="detail-card">
+    <div class="detail-meta">
+      <span class="post-number">POST #{{ currentPost.id }}</span>
+      <span>Autore #{{ currentPost.userId }}</span>
+    </div>
+    <h1>{{ currentPost.title }}</h1>
+    <p class="post-body">{{ currentPost.body }}</p>
+    <nav class="detail-nav" aria-label="Navigazione tra i post">
+      <button type="button" (click)="goToPrevious()" [disabled]="!canGoPrevious()">
+        <span aria-hidden="true">←</span> Precedente
+      </button>
+      <button type="button" (click)="goToNext()" [disabled]="!canGoNext()">
+        Successivo <span aria-hidden="true">→</span>
+      </button>
+    </nav>
+  </article>
+}
