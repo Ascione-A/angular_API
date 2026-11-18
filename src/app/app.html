@@ -1,11 +1,26 @@
+<!-- Intestazione principale dell'applicazione -->
 <header class="site-header">
+
+  <!-- Logo e nome dell'applicazione
+       routerLink="/posts" permette di tornare all'elenco dei post
+       aria-label fornisce una descrizione accessibile del collegamento -->
   <a class="brand" routerLink="/posts" aria-label="Vai all'elenco dei post">
+
+    <!-- Elemento grafico che mostra la lettera iniziale del nome Postboard -->
     <span class="brand-mark">P</span>
+
+    <!-- Nome dell'applicazione visualizzato nell'intestazione -->
     <span>Postboard</span>
   </a>
+
+  <!-- Etichetta che indica l'API utilizzata dall'applicazione -->
   <span class="api-label">JSONPlaceholder API</span>
 </header>
 
+<!-- Area principale che contiene il contenuto delle pagine -->
 <main class="app-main">
+
+  <!-- router-outlet è il punto in cui Angular carica
+       dinamicamente il componente associato alla rotta corrente -->
   <router-outlet />
 </main>

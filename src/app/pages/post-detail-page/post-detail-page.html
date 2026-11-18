@@ -1,33 +1,84 @@
-<a class="back-link" routerLink="/posts"> <span aria-hidden="true">←</span> Torna ai post </a>
+<!-- Link per tornare alla pagina che contiene l'elenco di tutti i post -->
+<a class="back-link" routerLink="/posts">
+  <!-- Freccia decorativa nascosta agli screen reader -->
+  <span aria-hidden="true">←</span>
+  Torna ai post
+</a>
 
+<!-- Verifica se il caricamento del post è ancora in corso -->
 @if (loading()) {
+  <!-- Mostra un riquadro di stato durante il caricamento -->
   <div class="status-card" role="status">
+    <!-- Indicatore grafico animato del caricamento, nascosto agli screen reader -->
     <span class="spinner" aria-hidden="true"></span>
+
+    <!-- Messaggio mostrato durante il caricamento -->
     <span>Caricamento del post...</span>
   </div>
+
+<!-- Se il caricamento è terminato ma si è verificato un errore -->
 } @else if (error(); as message) {
+  <!-- Sezione che mostra un messaggio di errore -->
   <section class="error-card" role="alert">
+
+    <!-- Icona grafica di errore, nascosta agli screen reader -->
     <span class="error-icon" aria-hidden="true">!</span>
+
     <div>
+      <!-- Titolo che comunica che non è stato possibile aprire il post -->
       <h1>Impossibile aprire il post</h1>
+
+      <!-- Visualizza il messaggio di errore contenuto nella variabile message -->
       <p>{{ message }}</p>
     </div>
+
+    <!-- Link per tornare all'elenco completo dei post -->
     <a class="return-link" routerLink="/posts">Rivedi tutti i post</a>
   </section>
+
+<!-- Se non ci sono errori e il post è disponibile -->
 } @else if (post(); as currentPost) {
+
+  <!-- Articolo che contiene i dettagli del post selezionato -->
   <article class="detail-card">
+
+    <!-- Contenitore delle informazioni aggiuntive del post -->
     <div class="detail-meta">
+
+      <!-- Mostra l'identificativo del post -->
       <span class="post-number">POST #{{ currentPost.id }}</span>
+
+      <!-- Mostra l'identificativo dell'autore del post -->
       <span>Autore #{{ currentPost.userId }}</span>
     </div>
+
+    <!-- Visualizza il titolo del post -->
     <h1>{{ currentPost.title }}</h1>
+
+    <!-- Visualizza il contenuto testuale del post -->
     <p class="post-body">{{ currentPost.body }}</p>
+
+    <!-- Barra di navigazione per spostarsi tra i diversi post -->
     <nav class="detail-nav" aria-label="Navigazione tra i post">
+
+      <!-- Pulsante per visualizzare il post precedente -->
+      <!-- Chiama il metodo goToPrevious() quando viene cliccato -->
+      <!-- Viene disabilitato se non esiste un post precedente -->
       <button type="button" (click)="goToPrevious()" [disabled]="!canGoPrevious()">
-        <span aria-hidden="true">←</span> Precedente
+
+        <!-- Freccia decorativa nascosta agli screen reader -->
+        <span aria-hidden="true">←</span>
+        Precedente
       </button>
+
+      <!-- Pulsante per visualizzare il post successivo -->
+      <!-- Chiama il metodo goToNext() quando viene cliccato -->
+      <!-- Viene disabilitato se non esiste un post successivo -->
       <button type="button" (click)="goToNext()" [disabled]="!canGoNext()">
-        Successivo <span aria-hidden="true">→</span>
+        Successivo
+
+        <!-- Freccia decorativa nascosta agli screen reader -->
+        <span aria-hidden="true">→</span>
       </button>
     </nav>
   </article>

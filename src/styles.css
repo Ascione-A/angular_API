@@ -1,27 +1,43 @@
+/* Seleziona tutti gli elementi della pagina */
 * {
+  /* Include padding e bordi nel calcolo della larghezza e dell'altezza degli elementi */
   box-sizing: border-box;
 }
 
+/* Definisce lo stile generale del corpo della pagina */
 body {
+  /* Imposta il colore di sfondo della pagina */
   background: #f5f7fb;
+
+  /* Imposta il colore predefinito del testo */
   color: #172b4d;
+
+  /* Definisce il carattere utilizzato, con alternative per diversi sistemi operativi */
   font-family:
     Inter,
     -apple-system,
     BlinkMacSystemFont,
     'Segoe UI',
     sans-serif;
+
+  /* Rimuove i margini predefiniti del browser */
   margin: 0;
+
+  /* Imposta una larghezza minima di 320 pixel per la pagina */
   min-width: 320px;
 }
 
+/* Applica lo stesso stile tipografico a pulsanti, campi di input e aree di testo */
 button,
 input,
 textarea {
+  /* Eredita il carattere tipografico definito nell'elemento genitore */
   font: inherit;
 }
 
+/* Seleziona tutti i pulsanti e i collegamenti */
 button,
 a {
+  /* Rimuove l'evidenziazione colorata che appare al tocco sui dispositivi mobili */
   -webkit-tap-highlight-color: transparent;
 }
