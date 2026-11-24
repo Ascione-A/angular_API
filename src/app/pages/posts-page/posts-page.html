@@ -1,141 +1,114 @@
-<!-- Sezione iniziale della pagina che contiene il titolo e il numero dei post -->
+<!-- Intestazione della pagina: titolo principale e contatore dei post -->
 <section class="page-heading">
   <div>
-    <!-- Piccola etichetta descrittiva della sezione -->
+    <!-- Etichetta di categoria della sezione -->
     <p class="eyebrow">Bacheca</p>
 
     <!-- Titolo principale della pagina -->
     <h1>Tutti i post</h1>
 
-    <!-- Breve descrizione delle funzionalità disponibili nella pagina -->
+    <!-- Sottotitolo descrittivo delle funzionalità disponibili -->
     <p class="subtitle">Consulta i contenuti o pubblica un nuovo post.</p>
   </div>
 
-  <!-- Riquadro che mostra il numero totale dei post caricati -->
-  <!-- aria-live="polite" comunica agli screen reader gli aggiornamenti senza interrompere la lettura -->
+  <!-- Riquadro del totale post: aria-live="polite" annuncia gli aggiornamenti agli screen reader -->
   <div class="count-card" aria-live="polite">
-
-    <!-- Mostra il numero dei post attraverso il signal postCount() -->
+    <!-- Numero totale dei post letto dal signal postCount() -->
     <span class="count-number">{{ postCount() }}</span>
-
-    <!-- Etichetta descrittiva del numero visualizzato -->
     <span class="count-label">post caricati</span>
   </div>
 </section>
 
-<!-- Controlla se è presente un errore -->
-<!-- Se error() contiene un valore, lo assegna alla variabile message -->
+<!-- Banner di errore: mostrato solo se il signal error() contiene un messaggio -->
 @if (error(); as message) {
-
-  <!-- Visualizza il messaggio di errore -->
-  <!-- role="alert" permette alle tecnologie assistive di riconoscere l'avviso -->
+  <!-- role="alert" garantisce la lettura immediata dell'errore dalle tecnologie assistive -->
   <div class="alert" role="alert">{{ message }}</div>
 }
 
-<!-- Sezione principale che organizza la pagina in due colonne -->
-<!-- Una colonna contiene l'elenco dei post, l'altra il modulo di creazione -->
+<!-- Layout principale a due colonne: elenco dei post a sinistra, modulo di creazione a destra -->
 <section class="content-grid">
 
-  <!-- Prima colonna: ricerca e visualizzazione dei post -->
+  <!-- Colonna 1: barra di ricerca e lista dei post -->
   <div class="list-column">
 
-    <!-- Campo di ricerca utilizzato per filtrare i post -->
+    <!-- Campo di ricerca per filtrare i post in tempo reale -->
     <label class="search-field">
-
-      <!-- Testo accessibile per gli screen reader, nascosto visivamente tramite CSS -->
+      <!-- Etichetta accessibile per screen reader, nascosta visivamente via CSS -->
       <span class="sr-only">Filtra i post</span>
 
-      <!-- Icona decorativa della ricerca, nascosta agli screen reader -->
+      <!-- Icona decorativa della lente di ingrandimento, ignorata dagli screen reader -->
       <span class="search-icon" aria-hidden="true">⌕</span>
 
-      <!-- Campo di ricerca -->
+      <!--
+        Input di ricerca:
+        - [value]="filter()" sincronizza il campo con il signal del filtro
+        - (input)="setFilter($event)" aggiorna il filtro a ogni digitazione
+      -->
       <input
         type="search"
-
-        <!-- Testo mostrato quando il campo è vuoto -->
         placeholder="Cerca nel titolo o nel testo..."
-
-        <!-- Collega il valore del campo al signal filter() -->
         [value]="filter()"
-
-        <!-- Quando l'utente digita, richiama il metodo setFilter() -->
         (input)="setFilter($event)"
       />
     </label>
 
-    <!-- Controlla se i post sono ancora in fase di caricamento -->
+    <!-- Gestione degli stati della lista (caricamento, lista vuota, nessun risultato, elenco) -->
     @if (loading()) {
 
-      <!-- Riquadro che comunica lo stato di caricamento -->
+      <!-- Stato di caricamento attivo -->
       <div class="status-card" role="status">
-
-        <!-- Indicatore grafico animato del caricamento -->
         <span class="spinner" aria-hidden="true"></span>
-
-        <!-- Messaggio mostrato durante il caricamento -->
         <span>Caricamento dei post...</span>
       </div>
 
-    <!-- Se il caricamento è terminato e non esistono post e nemmeno errori -->
     } @else if (posts().length === 0 && !error()) {
 
-      <!-- Comunica che non ci sono post disponibili -->
+      <!-- Stato vuoto: nessun post presente e nessun errore rilevato -->
       <div class="status-card">Nessun post disponibile.</div>
 
-    <!-- Se esistono post ma nessuno corrisponde al filtro di ricerca -->
     } @else if (visiblePosts().length === 0 && !error()) {
 
-      <!-- Comunica che la ricerca non ha prodotto risultati -->
+      <!-- Stato filtro vuoto: esistono post, ma nessuno corrisponde alla ricerca -->
       <div class="status-card">Nessun post corrisponde alla ricerca.</div>
 
-    <!-- Se nessuna delle condizioni precedenti è verificata, mostra l'elenco dei post -->
     } @else {
 
-      <!-- Contenitore che raggruppa tutte le schede dei post -->
+      <!-- Elenco dei post filtrati -->
       <div class="post-list">
 
-        <!-- Cicla tutti i post restituiti da visiblePosts() -->
-        <!-- track post.id permette ad Angular di identificare ogni post attraverso il suo ID -->
+        <!-- Iterazione sui post visibili con tracciamento univoco tramite post.id -->
         @for (post of visiblePosts(); track post.id) {
 
-          <!-- Singola scheda che rappresenta un post -->
+          <!-- Scheda del singolo post -->
           <article class="post-card">
 
-            <!-- Contenitore delle informazioni secondarie del post -->
+            <!-- Intestazione della scheda con ID e azione/stato del post -->
             <div class="post-meta">
-
-              <!-- Mostra l'identificativo del post -->
               <span>POST #{{ post.id }}</span>
 
-              <!-- Controlla se il post è stato creato localmente -->
+              <!-- Distingue i post simulati in locale da quelli provenienti dall'API -->
               @if (post.createdLocally) {
-
-                <!-- Mostra un'etichetta per identificare i post creati localmente -->
                 <span class="local-badge">Simulazione</span>
-
-              <!-- Se il post non è stato creato localmente -->
               } @else {
-
-                <!-- Link per aprire la pagina di dettaglio del post -->
-                <!-- routerLink costruisce il percorso utilizzando l'ID del post -->
-                <a [routerLink]="['/posts', post.id]"
-
-                  <!-- Imposta dinamicamente il testo accessibile del collegamento -->
-                  [attr.aria-label]="'Apri: ' + post.title">
-
-                  <!-- Testo del collegamento -->
+                <!--
+                  Collegamento alla pagina di dettaglio del post:
+                  - [routerLink] genera l'URL /posts/:id
+                  - [attr.aria-label] fornisce un'etichetta descrittiva per l'accessibilità
+                -->
+                <a
+                  [routerLink]="['/posts', post.id]"
+                  [attr.aria-label]="'Apri: ' + post.title"
+                >
                   Apri dettaglio
-
-                  <!-- Freccia decorativa nascosta agli screen reader -->
                   <span aria-hidden="true">↗</span>
                 </a>
               }
             </div>
 
-            <!-- Mostra il titolo del post -->
+            <!-- Titolo del post -->
             <h2>{{ post.title }}</h2>
 
-            <!-- Mostra il contenuto testuale del post -->
+            <!-- Contenuto testuale del post -->
             <p>{{ post.body }}</p>
           </article>
         }
@@ -143,87 +116,47 @@
     }
   </div>
 
-  <!-- Seconda colonna: modulo per creare un nuovo post -->
+  <!-- Colonna 2: modulo per la creazione di un nuovo post -->
   <aside class="create-card">
-
-    <!-- Etichetta introduttiva della sezione -->
     <p class="eyebrow">Nuovo contenuto</p>
-
-    <!-- Titolo del modulo di creazione -->
     <h2>Scrivi un post</h2>
-
-    <!-- Spiega il comportamento dimostrativo della creazione dei post -->
     <p class="form-intro">La demo accetta il post e lo aggiunge all'elenco corrente.</p>
 
-    <!-- Form per inserire un nuovo post -->
-    <!-- ngSubmit richiama createPost() quando il modulo viene inviato -->
+    <!-- Modulo reactive/template-driven: invia i dati al metodo createPost() -->
     <form (ngSubmit)="createPost()">
 
-      <!-- Etichetta associata al campo del titolo tramite l'attributo for -->
+      <!-- Campo titolo -->
       <label for="post-title">Titolo</label>
-
-      <!-- Campo di inserimento del titolo -->
+      <!-- Input testuale obbligatorio (max 120 caratteri) collegato a draftTitle -->
       <input
         id="post-title"
-
-        <!-- Nome del campo utilizzato per identificare il dato del modulo -->
         name="title"
-
-        <!-- Specifica che il campo accetta testo -->
         type="text"
-
-        <!-- Collega il campo alla variabile draftTitle -->
-        <!-- Il valore viene aggiornato automaticamente quando l'utente scrive -->
         [(ngModel)]="draftTitle"
-
-        <!-- Impedisce di inserire più di 120 caratteri -->
         maxlength="120"
-
-        <!-- Rende obbligatoria la compilazione del campo -->
         required
       />
 
-      <!-- Etichetta associata al campo del contenuto -->
+      <!-- Campo testo -->
       <label for="post-body">Testo</label>
-
-      <!-- Area di testo per inserire il contenuto del post -->
+      <!-- Area di testo obbligatoria (5 righe) collegata a draftBody -->
       <textarea
-
-        <!-- Identificativo del campo -->
         id="post-body"
-
-        <!-- Nome del campo utilizzato nel modulo -->
         name="body"
-
-        <!-- Collega il contenuto alla variabile draftBody -->
         [(ngModel)]="draftBody"
-
-        <!-- Imposta l'altezza iniziale dell'area di testo su 5 righe -->
         rows="5"
-
-        <!-- Rende obbligatoria la compilazione del campo -->
         required
       ></textarea>
 
-      <!-- Pulsante per inviare il modulo e pubblicare il post -->
+      <!-- Pulsante di invio: disabilitato automaticamente mentre posting() è true -->
       <button
         class="primary-button"
         type="submit"
-
-        <!-- Disabilita il pulsante mentre è in corso la pubblicazione -->
         [disabled]="posting()"
       >
-
-        <!-- Controlla se la pubblicazione è in corso -->
         @if (posting()) {
-
-          <!-- Messaggio mostrato durante l'invio -->
           Invio in corso...
-
-        <!-- Se la pubblicazione non è in corso -->
         } @else {
-
-          <!-- Testo normale del pulsante -->
           Pubblica post
         }
       </button>
